@@ -7,5 +7,7 @@
  *    Recitation: 02
  **/
 public class TextAnalyzer{
-    
+    public static void main(String[] args){
+        
+    }
 }

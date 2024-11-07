@@ -10,6 +10,7 @@
  **/
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 import java.io.File;
 import java.util.Scanner;
 
@@ -48,16 +49,136 @@ public class Passage extends Hashtable<String, Integer>{
             Scanner reader = new Scanner(file);
             while(reader.hasNext()){
                 String nextWord = reader.next();
-                nextWord.replace("[^a-x]", "");
-                if(nextWord.equals("")){
-                    continue;
+                nextWord.replace("[^A-Za-z]", "");
+                if(!nextWord.equals("")){
+                    put(nextWord, getOrDefault(nextWord, 0) + 1);
+                    wordCount++;
                 }
-
+                
             }
             reader.close();
         } catch (Exception e) {
             System.out.println("File not found.");
         }
+    }
+
+    /**
+     * Returns the relative frequency of a given word in the passage
+     * 
+     * @param word
+     *    The word to be checked
+     * @return
+     *    The relative frequency of the word
+     */
+    public double getWordFrequency(String word){
+        double ans = ((double) getOrDefault(word, 0))/wordCount;
+        return ans;
+    }
+
+    /**
+     * Returns the alls the words contained in the passage
+     * 
+     * @return
+     *    A set of all words in the passage
+     */
+    public Set<String> getWords(){
+        return keySet();
+    }
+
+    /**
+     * Returns the title of the passage
+     * 
+     * @return
+     *    The title of the passage
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets the title of the passage 
+     * 
+     * @param title
+     *    The new title of the passage
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Returns the word count of the passage
+     * 
+     * @return
+     *    The word count of the passage
+     */
+    public int getWordCount() {
+        return wordCount;
+    }
+
+    /**
+     * Sets the word count of the passage 
+     * 
+     * @param wordCount
+     *    The new word count of the passage
+     */
+    public void setWordCount(int wordCount) {
+        this.wordCount = wordCount;
+    }
+
+    /**
+     * Returns all similar titles
+     * 
+     * @return
+     *    The hashmap of similar titles
+     */
+    public Hashtable<String, Double> getSimilarTitle() {
+        return similarTitle;
+    }
+
+    /**
+     * Sets the similar title hashtable 
+     * 
+     * @param similarTitle
+     *    The new hashtable of similar titles
+     */
+    public void setSimilarTitle(Hashtable<String, Double> similarTitle) {
+        this.similarTitle = similarTitle;
+    }
+
+    /**
+     * Returns string of similar titles and their percentage similarity
+     * 
+     * @return
+     *    The string of similar titles and their precentage similarity
+     */
+    public String toString(){
+        String repString = "";
+        for(String title : similarTitle.keySet()){
+            repString += title + "(" + ((int) (similarTitle.get(title) * 100)) + "%), ";
+        }
+        return repString;
+    }
+
+    public static double cosineSimilarity(Passage p1, Passage p2){
+        double ans = 0;
+        double norm1 = 0;
+        double norm2 = 0;
+        double wordCount1 = p1.getWordCount();
+        double wordCount2 = p2.getWordCount();
+        for(String word: p1.keySet()){
+            double freq1 = p1.get(word)/wordCount1;
+            norm1 += Math.pow(freq1, 2);
+            if(p2.containsKey(word)){
+                ans += freq1 * p2.get(word)/wordCount2;
+            }
+        }
+        norm1 = Math.sqrt(norm1);
+        for(String word: p2.keySet()){
+            norm2 += Math.pow(p2.get(word)/wordCount2, 2);
+        }
+        norm2 = Math.sqrt(norm2);
+        ans /= (norm1 * norm2);
+        return ans;
     }
 
     private void generateStopWords(){
@@ -74,4 +195,6 @@ public class Passage extends Hashtable<String, Integer>{
             e.printStackTrace();
         }
     }
+
+
 }
