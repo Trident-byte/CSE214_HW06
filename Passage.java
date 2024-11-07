@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Passage extends Hashtable<String, Integer>{
@@ -49,16 +50,17 @@ public class Passage extends Hashtable<String, Integer>{
             Scanner reader = new Scanner(file);
             while(reader.hasNext()){
                 String nextWord = reader.next();
-                nextWord.replace("[^A-Za-z]", "");
+                wordCount++;
+                nextWord.replace("[^a-zA-Z\\d]", "");
                 if(!nextWord.equals("")){
                     put(nextWord, getOrDefault(nextWord, 0) + 1);
-                    wordCount++;
                 }
                 
             }
             reader.close();
         } catch (Exception e) {
             System.out.println("File not found.");
+            e.printStackTrace();
         }
     }
 
@@ -183,6 +185,7 @@ public class Passage extends Hashtable<String, Integer>{
 
     private void generateStopWords(){
         File stopWordsFile = new File("./StopWords.txt");
+        stopWords = new HashSet<String>();
         try{
             Scanner reader = new Scanner(stopWordsFile);
             while(reader.hasNextLine()){
@@ -196,5 +199,12 @@ public class Passage extends Hashtable<String, Integer>{
         }
     }
 
-
+    public static void main(String[] args){
+        File passage1 = new File("./passageFolder/CallOfCthulhu.txt");
+        File passage2 = new File("./passageFolder/Frankenstein.txt");
+        System.out.println(passage1);
+        Passage p1 = new Passage("CallOfCthulu", passage1);
+        Passage p2 = new Passage("Frankenstein", passage2);
+        System.out.println(cosineSimilarity(p1, p2));
+    }
 }

@@ -39,7 +39,7 @@ public class FrequencyList{
      * @return
      *    The frequency of the word in passage p
      */
-    public int getFrequency(Passage p){
+    public double getFrequency(Passage p){
         return frequencies.get(passageIndices.get(p.getTitle()));
     }
 }
