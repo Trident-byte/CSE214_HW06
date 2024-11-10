@@ -1,5 +1,5 @@
 /**
- * The <code>FrequencyList</code>
+ * The <code>FrequencyList</code> will contain the frequency of one word from a set of passages
  *
  * @author Brian Chau
  *    email brian.chau@stonybrook.edu
@@ -13,11 +13,33 @@ public class FrequencyList{
     String word;
     ArrayList<Double> frequencies;
     Hashtable<String, Integer> passageIndices;
+
+    /**
+     * Creates a frequency list from a set of passages based on a word
+     *
+     * @param word
+     *    The word which the frequency table will hold frequencies for
+     * @param passages
+     *    The list of passages to look for frequencies in
+     */
     public FrequencyList(String word, ArrayList<Passage> passages){
         this.word = word;
         for(Passage p: passages){
             addPassage(p);
         }
+    }
+
+    /**
+     * Creates a frequency list from one passages based on a word
+     *
+     * @param word
+     *    The word which the frequency table will hold frequencies for
+     * @param passage
+     *    The passage to look for frequencies in
+     */
+    public FrequencyList(String word, Passage passage){
+        this.word = word;
+        addPassage(passage);
     }
 
     /**
