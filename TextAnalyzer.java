@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Scanner;
 import java.io.File;
+import java.util.Arrays;
 /**
  * The <code>TextAnalyzer</code>
  *
@@ -32,6 +35,18 @@ public class TextAnalyzer{
         for(Passage p: passages){
             printSimilarities(p);
             printDivider();
+        }
+        for(int i = 0; i < passages.size(); i++){
+            Passage p = passages.get(i);
+            Hashtable<String, Double> similarities = p.getSimilarTitle();
+            Object[] potential = similarities.keySet().toArray();
+            Arrays.sort(potential);
+            for(int j = i; j < potential.length; j++){
+                String check =(String) potential[j];
+                if(similarities.get(check) > percentage){
+                    printSimilar(p.getTitle(), check, ((int) Math.round(similarities.get(check) * 100)));
+                }
+            }
         }
     }
 
@@ -65,6 +80,12 @@ public class TextAnalyzer{
             String nextLine = String.format("%26s%-54s", "|", brokenUp[0]);
             System.out.println(nextLine);
         }
+    }
+
+    private static void printSimilar(String title1, String title2, int percentage){
+        String line = String.format("'%s' and '%s' may have the same author (%d", title1, title2, percentage);
+        line += "% similar).";
+        System.out.println(line);
     }
 
     private static String[] breakUp(String line, int length){
